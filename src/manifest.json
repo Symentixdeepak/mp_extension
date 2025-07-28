@@ -1,0 +1,122 @@
+{
+  "manifest_version": 3,
+  "name": "ManagePlus LinkedIn Automation",
+  "version": "1.0.2",
+  "description": "LinkedIn automation by ManagePlus",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "cookies",
+    "tabs",
+    "alarms",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*",
+    "https://dev.manageplus.io/admin/api/ai/chat",
+    "https://dev.manageplus.io/*",
+    "https://app.manageplus.io/*",
+    "http://localhost:3000/*"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "http://localhost:3000/*",
+      "https://dev.manageplus.io/*",
+      "https://app.manageplus.io/*"
+    ]
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "assets/logo_16.png",
+      "48": "assets/logo_48.png",
+      "128": "assets/logo_128.png"
+    }
+  },
+
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+
+  "background": {
+    "service_worker": "js/background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/feed/*",
+        "https://www.linkedin.com/posts/*",
+        "https://www.linkedin.com/feed/update/*"
+      ],
+      "exclude_matches": [
+        "https://www.linkedin.com/search/results/people/*",
+        "https://www.linkedin.com/in/*/recent-activity/all/*"
+      ],
+      "js": ["js/content.js"],
+      "css": ["styles/styles.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.linkedin.com/search/results/content/*",
+        "https://www.linkedin.com/feed/update/*"
+      ],
+      "js": ["js/topicList.js"],
+      "css": ["styles/styles.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.linkedin.com/feed/*",
+        "https://www.linkedin.com/posts/*",
+        "https://www.linkedin.com/feed/update/*",
+        "https://www.linkedin.com/search/results/content/*"
+      ],
+      "js": ["js/testComment.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.linkedin.com/*"],
+      "js": ["js/import.js"],
+      "css": ["styles/styles.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.linkedin.com/in/*/recent-activity/all/*"],
+      "js": ["js/activityEnageger.js"],
+      "css": ["styles/styles.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.linkedin.com/search/results/people/*"],
+      "js": ["js/linkedinNoResultsObserver.js"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://www.linkedin.com/feed/*",
+        "https://www.linkedin.com/in/*",
+        "https://www.linkedin.com/search/results/content/*"
+      ],
+      "css": ["styles/styles.css"],
+      "js": ["js/importProspect.js"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*", "selectors.json", "popup.html"],
+      "matches": ["https://www.linkedin.com/*"]
+    }
+  ],
+
+  "icons": {
+    "16": "assets/logo_16.png",
+    "48": "assets/logo_48.png",
+    "128": "assets/logo_128.png"
+  }
+}

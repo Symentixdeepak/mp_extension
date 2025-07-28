@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ManagePlus LinkedIn Automation</title>
+    <meta charset="UTF-8" />
+    <!-- <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    /> -->
+    <link rel="stylesheet" href="../styles/styles.css" />
+    <style>
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .spinner-border {
+        border: 2px solid #fff;
+        border-right-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        animation: spin 0.75s linear infinite;
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <div class="container mx-auto max-w-3xl p-6 rounded-t-lg">
+      <div
+        class="bg-gradient-to-r from-black to-gray-800 flex items-center p-4"
+      >
+        <img
+          src="https://app.manageplus.io/admin/images/mp_logo_transparent.png"
+          alt="manageplus_logo"
+          width="60"
+          height="60"
+        />
+        <div class="text-white">
+          <h1 class="text-2xl font-bold -mt-1">
+            ManagePlus LinkedIn Automation
+          </h1>
+          <p class="text-sm">Configure and track your LinkedIn engagement</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <!-- <div class="bg-white border-b flex">
+        <button
+          class="tab-button active px-6 py-3 font-medium"
+          data-tab="options"
+        >
+          Settings
+        </button>
+        <button class="tab-button px-6 py-3 font-medium" data-tab="history">
+          Engagement History
+        </button>
+      </div> -->
+      <!-- Navigation Tabs -->
+      <div class="bg-white border-b flex">
+        <button
+          class="tab-button active px-6 py-3 font-medium"
+          data-tab="options"
+        >
+          Settings
+        </button>
+        <button
+          class="tab-button px-6 py-3 font-medium"
+          data-tab="listSegments"
+        >
+          List
+        </button>
+        <!-- <button class="tab-button px-6 py-3 font-medium" data-tab="history">
+          Engagement History
+        </button>
+
+        <button class="tab-button px-6 py-3 font-medium" data-tab="analytics">
+          Analytics
+        </button> -->
+        <button
+          class="tab-button px-6 py-3 font-medium"
+          data-tab="engagementActivity"
+        >
+          Engagement Activity
+        </button>
+        <button class="tab-button px-6 py-3 font-medium" data-tab="history">
+          Engagement Feed History
+        </button>
+        <!-- NEW TAB -->
+      </div>
+
+      <!-- Options Tab Content -->
+      <div
+        id="options"
+        class="tab-content active bg-white rounded-b-lg shadow-md p-6"
+      >
+        <form id="options-form">
+          <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4 pb-2 border-b">
+              Posting Settings
+            </h2>
+
+            <div class="mb-4">
+              <label class="flex items-center space-x-3 mb-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="likePostEnabled"
+                  class="form-checkbox h-5 w-5 text-blue-600"
+                />
+                <span class="text-gray-900 font-medium">Auto-like posts</span>
+              </label>
+              <p class="text-sm text-gray-600 ml-8">
+                When enabled, posts will be liked automatically.
+              </p>
+            </div>
+
+            <div class="mb-4">
+              <label class="flex items-center space-x-3 mb-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="autoPostEnabled"
+                  class="form-checkbox h-5 w-5 text-blue-600"
+                />
+                <span class="text-gray-900 font-medium"
+                  >Auto-post comments</span
+                >
+              </label>
+              <p class="text-sm text-gray-600 ml-8">
+                When enabled, comments will be posted automatically without
+                confirmation.
+              </p>
+            </div>
+
+            <div class="mb-4">
+              <label
+                for="dailyLimit"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Daily Limit</label
+              >
+              <input
+                type="number"
+                id="dailyLimit"
+                min="1"
+                max="100"
+                class="form-input mt-1 p-1 w-20 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              />
+              <p class="text-xs text-gray-500 mt-1">
+                Maximum daily actions. The extension stops once it performs this
+                many likes OR this many comments in a day.
+              </p>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Comment length (words)
+              </label>
+
+              <input
+                type="number"
+                id="commentLength"
+                min="3"
+                max="120"
+                class="form-input mt-1 p-1 w-20 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              />
+              <!-- <select
+                name="commentLength"
+                id="commentLength"
+                class="form-select rounded border border-gray-300 text-sm p-1"
+              >
+                <option value="short">Short (&lt; 10 words)</option>
+                <option value="short">Short (&lt; 30 words)</option>
+                <option value="medium">Medium ( &lt; 60 words)</option>
+                <option value="long">Long (&lt; 120 words)</option>
+              </select> -->
+              <p class="text-xs text-gray-500 mt-1">
+                Maximum number of words to generate in the comment.
+              </p>
+            </div>
+
+            <div class="mb-4">
+              <label class="flex items-center space-x-3 mb-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="feedCommenterActive"
+                  class="form-checkbox h-5 w-5 text-blue-600"
+                />
+                <span class="text-gray-900 font-medium"
+                  >Enable Feed Engagement</span
+                >
+              </label>
+              <p class="text-sm text-gray-600 ml-8">
+                When enabled, the extension will engage with posts on your
+                LinkedIn feed.
+              </p>
+            </div>
+
+            <div class="mb-4">
+              <label class="flex items-center space-x-3 mb-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="enableAICommentOnPost"
+                  class="form-checkbox h-5 w-5 text-black-600"
+                  checked
+                />
+                <span class="text-gray-900 font-medium"
+                  >Enable AI comment on post</span
+                >
+              </label>
+              <p class="text-sm text-gray-600 ml-8">
+                When enabled, you will be able to see the AI comment button
+                inside the comment input to generate comment.
+              </p>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4 pb-2 border-b">
+              Anti-Detection Settings
+            </h2>
+
+            <div class="flex items-center gap-x-4">
+              <div class="mb-4">
+                <label
+                  for="minDelay"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Minimum Delay (minutes)</label
+                >
+                <input
+                  type="number"
+                  id="minDelay"
+                  min="5"
+                  class="form-input mt-1 p-1 w-20 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                />
+                <p class="text-xs text-gray-500 mt-1">
+                  Minimum delay between actions (recommended: 5+)
+                </p>
+              </div>
+
+              <div class="mb-4">
+                <label
+                  for="maxDelay"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Maximum Delay (minutes)</label
+                >
+                <input
+                  type="number"
+                  id="maxDelay"
+                  min="10"
+                  class="form-input mt-1 p-1 w-20 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                />
+                <p class="text-xs text-gray-500 mt-1">
+                  Maximum delay between actions (recommended: 15+)
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4 pb-2 border-b">
+              Prompt Setting
+            </h2>
+
+            <div class="mb-4">
+              <label
+                for="minDelay"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Prompt</label
+              >
+
+              <textarea
+                id="promptInput"
+                cols="30"
+                rows="10"
+                class="form-input mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              >
+              </textarea>
+              <p class="text-xs text-gray-500 mt-1">
+                The {{MAX_WORDS}} placeholder inserts the selected comment
+                length. If omitted, the comment length setting will not apply.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex align-center justify-between w-full">
+            <a
+              href="http://manageplus.io?utm_source=mp_linkedin_engagement_extension&utm_medium=extension&&utm_content=options_visit_button"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-4 py-2 bg-transparent text-gray-800 rounded-lg border border-[#dfdfdf] shadow-[0_1px_3px_rgba(0,0,0,0.1)] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+            >
+              Visit Us
+            </a>
+
+            <div class="flex justify-end space-x-4">
+              <button
+                type="button"
+                id="reset-button"
+                class="px-4 py-2 bg-transparent text-gray-800 rounded-lg border border-[#dfdfdf] shadow-[0_1px_3px_rgba(0,0,0,0.1)] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+              >
+                Reset to Defaults
+              </button>
+              <button
+                type="submit"
+                id="save-button"
+                class="primary-btn px-4 py-2 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                style="background-color: #101112"
+              >
+                Save Settings
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div
+          id="status-message"
+          class="mt-4 p-3 bg-green-100 text-green-800 rounded hidden"
+        ></div>
+      </div>
+
+      <!-- History Tab Content -->
+      <div id="history" class="tab-content bg-white rounded-b-lg shadow-md p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-semibold">Your Engagement History</h2>
+          <div class="flex space-x-2">
+            <button
+              id="refresh-history"
+              title="refresh"
+              class="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            <button
+              id="export-history"
+              title="export"
+              class="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            <button
+              id="clear-history"
+              title="clear"
+              class="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200"
+            >
+              Clear All
+            </button>
+          </div>
+        </div>
+
+        <div id="history-filters" class="mb-4 flex space-x-2">
+          <select
+            id="filter-type"
+            class="form-select rounded border border-gray-300 text-sm p-1"
+          >
+            <option value="all">All Actions</option>
+            <option value="like">Likes Only</option>
+            <option value="comment">Comments Only</option>
+          </select>
+          <select
+            id="filter-period"
+            class="form-select rounded border border-gray-300 text-sm p-1"
+          >
+            <option value="30">Last 30 Days</option>
+            <option value="7">Last 7 Days</option>
+            <option value="0">Today</option>
+          </select>
+        </div>
+
+        <div id="history-stats" class="mb-4 p-3 bg-blue-50 rounded text-sm">
+          <span id="total-actions">0 actions</span> across
+          <span id="total-posts">0 posts</span>
+        </div>
+
+        <div id="history-list" class="space-y-4">
+          <!-- History items will be inserted here by JavaScript -->
+          <div
+            class="text-center py-8 text-gray-500"
+            id="empty-history-message"
+          >
+            No engagement history found. Your interactions will appear here.
+          </div>
+        </div>
+      </div>
+
+      <!-- List Segments Tab Content -->
+      <div
+        id="listSegments"
+        class="tab-content bg-white rounded-b-lg shadow-md p-6 hidden"
+      >
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
+          <h2 class="text-xl font-semibold mb-4" id="list-header">
+            Segment Lists
+          </h2>
+
+          <div id="list-controls-container" class="mb-4">
+            <div class="flex items-center space-x-4">
+              <label
+                for="listTabBoardSelect"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Select Workspace:
+              </label>
+              <div>
+                <select
+                  id="listTabBoardSelect"
+                  class="form-select rounded border border-gray-300 text-sm p-1 w-full"
+                >
+                  <option value="">Loading workspaces...</option>
+                </select>
+              </div>
+              <div>
+                <!-- Spacer label for alignment -->
+                <button
+                  id="create-new-list-btn"
+                  class="primary-btn px-4 py-2 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                  style="background-color: #101112"
+                >
+                  Create New List
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          id="create-list-form-container"
+          class="hidden mt-6 p-4 border rounded-md bg-gray-50"
+        >
+          <h3 class="text-lg font-semibold mb-3">Create New Segment List</h3>
+          <div class="mb-3">
+            <label
+              for="new-list-name"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >List Name <span class="text-red-500">*</span></label
+            >
+            <input
+              type="text"
+              id="new-list-name"
+              placeholder="E.g., 'Tech Leads in SF'"
+              class="form-input mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="new-list-prompt"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Engagement Prompt
+            </label>
+            <textarea
+              id="new-list-prompt"
+              rows="5"
+              placeholder="Enter the engagement prompt for this list..."
+              class="form-input mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              required
+            ></textarea>
+            <p class="text-xs text-gray-500 mt-1">
+              This prompt will be used for engagements initiated from this list.
+            </p>
+          </div>
+          <div class="flex justify-end space-x-3">
+            <button
+              id="cancel-new-list-btn"
+              class="px-4 py-2 bg-transparent text-gray-800 rounded-lg border border-[#dfdfdf] shadow-[0_1px_3px_rgba(0,0,0,0.1)] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+            >
+              Cancel
+            </button>
+            <button
+              id="save-new-list-btn"
+              class="primary-btn px-4 py-2 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              style="background-color: #101112"
+            >
+              Save List
+            </button>
+          </div>
+        </div>
+
+        <div id="segment-lists-container" class="mt-2">
+          <!-- Segment lists will be loaded here by JavaScript -->
+          <p class="text-gray-500 text-center py-4">
+            Select a workspace to view lists, or create a new list.
+          </p>
+        </div>
+        <!-- Customer List View (Initially Hidden) -->
+        <div id="customer-list-view" class="hidden" style="margin-top: -10px">
+          <div class="flex items-center mb-4">
+            <button
+              id="back-to-segment-lists-btn"
+              class="mr-3 p-1.5 rounded-md hover:bg-gray-200 transition-colors"
+              title="Back to lists"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                class="w-5 h-5 text-gray-600"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                />
+              </svg>
+            </button>
+            <h3
+              class="text-lg font-semibold text-gray-800"
+              id="customer-list-title-static"
+            >
+              Prospects in:
+              <span id="customer-list-dynamic-name" class="font-normal"></span>
+            </h3>
+          </div>
+          <div class="mb-4">
+            <input
+              type="text"
+              id="customer-search-input"
+              placeholder="Search prospects by name..."
+              style="
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                padding: 8px;
+                width: 300px;
+              "
+              class="form-input mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+            />
+          </div>
+          <div id="customer-list-loading" class="text-center py-6 hidden">
+            <p class="text-gray-500">Loading prospects...</p>
+            <!-- You can add a more sophisticated spinner SVG here if desired -->
+          </div>
+          <div id="customer-table-container">
+            <div style="height: 500px; overflow-y: auto">
+              <table class="min-w-full divide-y divide-gray-200 hidden">
+                <!-- Initially hidden until data or empty message -->
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Name
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Engaged
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Job Title
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      LinkedIn
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="customer-list-table-body"
+                  class="bg-white divide-y divide-gray-200"
+                >
+                  <!-- Customer rows will be inserted here by JavaScript -->
+                </tbody>
+              </table>
+              <p
+                id="customer-list-empty-message"
+                class="text-gray-500 text-center py-6 hidden"
+              >
+                No prospects found.
+              </p>
+            </div>
+          </div>
+          <div
+            id="customer-pagination"
+            class="flex justify-center items-center space-x-2 mt-4 hidden"
+          >
+            <button
+              id="customer-prev-page"
+              class="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
+              disabled
+            >
+              Prev
+            </button>
+            <span id="customer-page-info" class="text-sm"></span>
+            <button
+              id="customer-next-page"
+              class="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
+              disabled
+            >
+              Next
+            </button>
+          </div>
+        </div>
+        <!-- End of Customer List View -->
+      </div>
+      <!-- Analytics Tab Content -->
+      <div
+        id="analytics"
+        class="tab-content bg-white rounded-b-lg shadow-md p-6 hidden"
+      >
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold">Engagement Summary</h2>
+          <select
+            id="global-date-filter"
+            class="form-select rounded border border-gray-300 text-sm p-1"
+          >
+            <option value="30">Last 30 Days</option>
+            <option value="7">Last 7 Days</option>
+            <option value="0">Today</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-white rounded-lg shadow p-4">
+            <p class="text-gray-500 text-sm mb-2">Total Posts Engaged</p>
+            <h3
+              id="total-posts-engaged"
+              class="text-2xl font-bold text-blue-500 mb-2"
+            >
+              0
+            </h3>
+            <!-- <div id="posts-chart" class="h-16"></div> -->
+          </div>
+          <div class="bg-white rounded-lg shadow p-4">
+            <p class="text-gray-500 text-sm mb-2">Total Likes</p>
+            <h3
+              id="total-likes-done"
+              class="text-2xl font-bold text-blue-500 mb-2"
+            >
+              0
+            </h3>
+            <!-- <div id="likes-chart" class="h-16"></div> -->
+          </div>
+          <div class="bg-white rounded-lg shadow p-4">
+            <p class="text-gray-500 text-sm mb-2">Total Comments</p>
+            <h3
+              id="total-comments-done"
+              class="text-2xl font-bold text-blue-500 mb-2"
+            >
+              0
+            </h3>
+            <!-- <div id="comments-chart" class="h-16"></div> -->
+          </div>
+        </div>
+
+        <!-- <div class="bg-white rounded-lg shadow p-4 mb-6">
+          <p class="text-gray-500 text-sm mb-2">Average Actions Per Day</p>
+          <h3 id="average-actions" class="text-2xl font-bold text-gray-800">
+            0
+          </h3>
+        </div> -->
+
+        <!-- Daily Engagement Chart -->
+        <div class="bg-white rounded-lg shadow p-4 mt-6">
+          <p class="text-gray-500 text-sm mb-4">
+            Daily Engagement (Likes + Comments)
+          </p>
+          <div id="daily-engagement-chart" class="h-80"></div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4">
+          <p class="text-gray-500 text-sm mb-4">Top 5 Users You Engaged With</p>
+          <ul id="top-users" class="space-y-2 text-gray-700 text-sm">
+            <li>No data available.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Engagement Activity Tab Content -->
+      <div
+        id="engagementActivity"
+        class="tab-content bg-white rounded-b-lg shadow-md p-6 hidden"
+      >
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-semibold">Engagement Activity Log</h2>
+          <!-- <div class="flex space-x-2">
+            <button
+              id="refresh-engagement-activity"
+              title="refresh"
+              class="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            <button
+              id="export-engagement-activity"
+              title="export"
+              class="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </div> -->
+        </div>
+
+        <div
+          id="engagement-activity-filters"
+          class="mb-4 flex space-x-2 items-center justify-between"
+        >
+          <!-- This is the dedicated board filter for the Engagement Activity tab -->
+          <!-- It has a unique ID 'filter-activity-board' -->
+          <!-- The List tab uses 'listTabBoardSelect' -->
+          <div class="flex items-center space-x-4">
+            <label
+              for="filter-activity-board"
+              id="filter-activity-board-label"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Select Workspace:
+            </label>
+            <select
+              id="filter-activity-board"
+              class="form-select rounded border border-gray-300 text-sm p-1"
+            >
+              <option value="">Loading Workspaces...</option>
+            </select>
+          </div>
+          <div
+            id="filter-activity-period-container"
+            class="flex items-center space-x-4"
+          >
+            <label
+              for="filter-activity-period"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Select Time Period:
+            </label>
+            <select
+              id="filter-activity-period"
+              class="form-select rounded border border-gray-300 text-sm p-1 ml-2"
+            >
+              <option value="7">Last 7 Days</option>
+              <option value="15">Last 15 Days</option>
+              <option value="30">Last 30 Days</option>
+              <option value="90">Last 90 Days</option>
+            </select>
+          </div>
+        </div>
+
+        <div
+          id="engagement-activity-stats"
+          class="mb-4 p-3 bg-blue-50 rounded text-sm"
+        >
+          <span id="total-engagement-activities">0 Activities</span>
+        </div>
+
+        <div
+          style="height: 500px; overflow-y: auto"
+          id="engagement-activity-list"
+          class="space-y-4"
+        >
+          <div
+            class="text-center py-8 text-gray-500"
+            id="empty-engagement-activity-message"
+          >
+            No engagement activity found.
+          </div>
+        </div>
+        <div
+          id="engagement-activity-pagination"
+          class="flex justify-center items-center space-x-2 mt-4 hidden"
+        >
+          <button
+            id="engagement-activity-prev-page"
+            class="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
+            disabled
+          >
+            Prev
+          </button>
+          <span id="engagement-activity-page-info" class="text-sm"></span>
+          <button
+            id="engagement-activity-next-page"
+            class="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
+            disabled
+          >
+            Next
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-8 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg
+              class="h-5 w-5 text-yellow-400"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-yellow-800">
+              Important Notice
+            </h3>
+            <div class="mt-2 text-sm text-yellow-700">
+              <p>
+                Automated interactions on LinkedIn may violate their Terms of
+                Service. Use this extension responsibly and at your own risk. To
+                maintain natural engagement and avoid detection:
+                <!-- We
+                recommend using it with moderation to avoid account
+                restrictions. -->
+              </p>
+              <ul class="list-disc pl-5 space-y-1 mt-1">
+                <li>
+                  <span class="font-semibold">Start Conservative:</span>
+                  Set comment limit to close to your organic activity level
+                </li>
+                <li>
+                  <span class="font-semibold">Grow Gradually:</span>
+                  Increase comment limit by 10-15% weekly if no issues
+                </li>
+                <li>
+                  <span class="font-semibold">Stay Under Radar:</span>
+                  Consistency beats volume spikes
+                </li>
+              </ul>
+
+              <p class="italic text-gray-500 text-xs mt-2">
+                Example: Normally 5/day? Start with 6-7, not 20.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <script type="module" src="options.js"></script>
+    <script type="module" src="history.js"></script> -->
+  </body>
+</html>

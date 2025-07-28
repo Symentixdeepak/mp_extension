@@ -1,0 +1,75 @@
+{
+  "https://www.linkedin.com/in/*/recent-activity/all/": {
+    "postList": [".feed-shared-update-v2:not([data-auto-commenter-processed])"],
+    "commentButton": [
+      "button.comments-comment-box__submit-button",
+      "button[aria-label=\"Comment\"]"
+    ],
+    "commentURN": [".comments-comment-entity"],
+    "promotedPost": [
+      ".update-components-actor__description",
+      ".update-components-actor__sub-description"
+    ],
+    "postContent": [
+      ".update-components-update-v2__commentary",
+      ".update-components-text"
+    ],
+    "likeButton": [
+      "button.react-button__trigger",
+      "[aria-label=\"React Like\"]"
+    ],
+    "commentInput": [
+      "div[contenteditable=\"true\"][role=\"textbox\"]",
+      ".comments-comment-box__form-contenteditable"
+    ],
+    "submitButton": ["button.comments-comment-box__submit-button--cr"],
+    "openCommentButton": [
+      "comment-button",
+      "button[aria-label=\"Open comments\"]"
+    ],
+    "commentElements": [
+      ".comments-comment-item__main-content",
+      ".update-components-text"
+    ],
+    "loadMoreComments": [
+      ".comments-comments-list__load-more-comments-button--cr"
+    ]
+  },
+  "https://www.linkedin.com/feed/": {
+    "postList": [".feed-shared-update-v2:not([data-auto-commenter-processed])"],
+    "commentButton": [
+      "button.comments-comment-box__submit-button",
+      "button[aria-label=\"Comment\"]"
+    ],
+    "commentURN": [".comments-comment-entity"],
+    "promotedPost": [
+      ".update-components-actor__description",
+      ".update-components-actor__sub-description"
+    ],
+    "postContent": [
+      ".update-components-update-v2__commentary",
+      ".update-components-text"
+    ],
+    "likeButton": [
+      "button.react-button__trigger",
+      "[aria-label=\"React Like\"]"
+    ],
+    "commentInput": [
+      "div[contenteditable=\"true\"][role=\"textbox\"]",
+      ".comments-comment-box__form-contenteditable",
+      ".ql-editor"
+    ],
+    "submitButton": ["button.comments-comment-box__submit-button--cr"],
+    "openCommentButton": [
+      "comment-button",
+      "button[aria-label=\"Open comments\"]"
+    ],
+    "commentElements": [
+      ".comments-comment-item__main-content",
+      ".update-components-text"
+    ],
+    "loadMoreComments": [
+      ".comments-comments-list__load-more-comments-button--cr"
+    ]
+  }
+}
