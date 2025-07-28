@@ -434,48 +434,90 @@ const tracker = require("../../utils/engagement");
 
   // Render the topic button based on topic list and current url
   async function renderTopicButtonFromList(sessionId) {
-    const ul = getTopicButtonUl();
     console.log(
       "LinkedIn TopicList: Rendering topic button for session:",
       sessionId
     );
-    if (!ul) return;
-    ul.querySelectorAll("li.mp-topic-button-li").forEach((li) => li.remove());
-    const topicList = await requestTopicListFromBackground(sessionId);
-    const currentUrl = window.location.href;
-    const isManaged =
-      Array.isArray(topicList) &&
-      topicList.some(
-        (topic) => topic.url === currentUrl && topic.sessionId === sessionId
-      );
-    console.log("LinkedIn TopicList: Current URL is managed:", isManaged);
-    console.log("LinkedIn TopicList: Topic list:", ul);
+    
+    const ul = getTopicButtonUl();
     if (!ul) {
-      console.warn(
-        "appendTopicButtonLi: <ul> is null, cannot append topic button."
-      );
+      console.warn("LinkedIn TopicList: UL not found, skipping render");
       return;
     }
-    // Remove any existing topic button li
-    ul.querySelectorAll("li.mp-topic-button-li").forEach((li) => li.remove());
-    const li = document.createElement("li");
-    li.className = "mp-topic-button-li";
-    const button = document.createElement("button");
-    button.className = "mp-topic-button";
-    button.type = "button";
-    button.innerText = isManaged ? "Manage Topic List" : "Add Topic to List";
-    button.onclick = isManaged
-      ? () => showNotification("Already managed topic", "info")
-      : handleAddTopicToList;
-    li.appendChild(button);
-    ul.appendChild(li);
-    console.log(
-      "appendTopicButtonLi: Appended topic button li:",
-      li,
-      "to ul:",
-      ul
-    );
+
+    // Check if button already exists and is correct
+    const existingButton = ul.querySelector("li.mp-topic-button-li button.mp-topic-button");
+    const currentUrl = window.location.href;
+    
+    try {
+      const topicList = await requestTopicListFromBackground(sessionId);
+      const isManaged =
+        Array.isArray(topicList) &&
+        topicList.some(
+          (topic) => topic.url === currentUrl && topic.sessionId === sessionId
+        );
+      
+      const expectedText = isManaged ? "Manage Topic List" : "Add Topic to List";
+      
+      // If button exists and has correct text, don't re-render
+      if (existingButton && existingButton.innerText === expectedText) {
+        console.log("LinkedIn TopicList: Button already correct, skipping render");
+        return;
+      }
+      
+      console.log("LinkedIn TopicList: Current URL is managed:", isManaged);
+      
+      // Remove any existing topic button li only if we need to update
+      ul.querySelectorAll("li.mp-topic-button-li").forEach((li) => li.remove());
+      
+      // Create new button
+      const li = document.createElement("li");
+      li.className = "mp-topic-button-li";
+      const button = document.createElement("button");
+      button.className = "mp-topic-button";
+      button.type = "button";
+      button.innerText = expectedText;
+      button.onclick = isManaged
+        ? () => showNotification("Already managed topic", "info")
+        : handleAddTopicToList;
+      li.appendChild(button);
+      ul.appendChild(li);
+      
+      console.log("LinkedIn TopicList: Topic button rendered successfully");
+    } catch (error) {
+      console.error("LinkedIn TopicList: Error rendering topic button:", error);
+    }
   }
+
+  // Debounce function to prevent excessive calls
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  // Flag to prevent multiple renders
+  let isRendering = false;
+
+  // Debounced render function
+  const debouncedRenderTopicButton = debounce(async () => {
+    if (isRendering) return;
+    isRendering = true;
+    try {
+      const sessionId = await getLinkedInSessionId();
+      if (sessionId) {
+        await renderTopicButtonFromList(sessionId);
+      }
+    } finally {
+      isRendering = false;
+    }
+  }, 1000); // Wait 1 second after last change
 
   // On page load, get sessionId and render topic button
   async function initialize() {
@@ -485,14 +527,51 @@ const tracker = require("../../utils/engagement");
     if (sessionId) {
       renderTopicButtonFromList(sessionId);
     }
-    // Only observe for topic button
-    const observer = new MutationObserver(async () => {
-      const sessionId = await getLinkedInSessionId();
-      if (sessionId) {
-        renderTopicButtonFromList(sessionId);
+    
+    // More specific observer that only watches for the filters bar
+    const observer = new MutationObserver((mutations) => {
+      let shouldReRender = false;
+      
+      for (const mutation of mutations) {
+        // Only trigger if the filters bar or its children change
+        if (mutation.target.id === 'search-reusables__filters-bar' ||
+            mutation.target.closest('#search-reusables__filters-bar') ||
+            // Check if any added nodes contain the filters bar
+            Array.from(mutation.addedNodes).some(node => 
+              node.nodeType === Node.ELEMENT_NODE && 
+              (node.id === 'search-reusables__filters-bar' || 
+               node.querySelector && node.querySelector('#search-reusables__filters-bar'))
+            )) {
+          shouldReRender = true;
+          break;
+        }
+      }
+      
+      if (shouldReRender) {
+        debouncedRenderTopicButton();
       }
     });
-    observer.observe(document.body, { childList: true, subtree: true });
+    
+    // Observe with more specific configuration
+    observer.observe(document.body, { 
+      childList: true, 
+      subtree: true,
+      attributes: false, // Don't watch attribute changes
+      attributeOldValue: false,
+      characterData: false,
+      characterDataOldValue: false
+    });
+
+    // Also listen for URL changes in SPA
+    let currentUrl = window.location.href;
+    const urlObserver = new MutationObserver(() => {
+      if (window.location.href !== currentUrl) {
+        currentUrl = window.location.href;
+        debouncedRenderTopicButton();
+      }
+    });
+    urlObserver.observe(document.body, { childList: true, subtree: true });
+
     chrome.storage.local.get(["commentLength", "userPrompt"], (result) => {
       if (result.commentLength) {
         commentLength = result.commentLength;
